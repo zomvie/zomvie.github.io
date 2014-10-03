@@ -2556,23 +2556,10 @@ MainScene.__name__ = ["MainScene"];
 MainScene.__super__ = com.haxepunk.Scene;
 MainScene.prototype = $extend(com.haxepunk.Scene.prototype,{
 	begin: function() {
-		var block = this.addGraphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
-			var $r;
-			var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
-				var $r;
-				var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/block.png",true);
-				$r = data;
-				return $r;
-			}($this))));
-			$r = e;
-			return $r;
-		}(this)):(function($this) {
-			var $r;
-			var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/block.png"));
-			$r = e1;
-			return $r;
-		}(this))));
-		this.addGraphic(new com.haxepunk.graphics.Text("Hello world!!",100,100));
+		this.add(new entities.Block(30,30));
+	}
+	,update: function() {
+		com.haxepunk.Scene.prototype.update.call(this);
 	}
 	,__class__: MainScene
 });
@@ -10132,6 +10119,41 @@ com.haxepunk.utils.Touch.prototype = {
 	,__class__: com.haxepunk.utils.Touch
 	,__properties__: {get_pressed:"get_pressed",get_sceneY:"get_sceneY",get_sceneX:"get_sceneX"}
 };
+var entities = {};
+entities.Block = function(x,y) {
+	if(y == null) y = 0;
+	if(x == null) x = 0;
+	com.haxepunk.Entity.call(this,x,y);
+	com.haxepunk.Entity.prototype.set_graphic.call(this,new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+		var $r;
+		var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+			var $r;
+			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/block.png",true);
+			$r = data;
+			return $r;
+		}($this))));
+		$r = e;
+		return $r;
+	}(this)):(function($this) {
+		var $r;
+		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/block.png"));
+		$r = e1;
+		return $r;
+	}(this))));
+};
+$hxClasses["entities.Block"] = entities.Block;
+entities.Block.__name__ = ["entities","Block"];
+entities.Block.__super__ = com.haxepunk.Entity;
+entities.Block.prototype = $extend(com.haxepunk.Entity.prototype,{
+	update: function() {
+		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromRight(37))) this.moveBy(-2,0);
+		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromRight(39))) this.moveBy(2,0);
+		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromRight(38))) this.moveBy(0,-2);
+		if(com.haxepunk.utils.Input.mouseDown) this.moveBy(0,2);
+		com.haxepunk.Entity.prototype.update.call(this);
+	}
+	,__class__: entities.Block
+});
 var haxe = {};
 haxe.StackItem = $hxClasses["haxe.StackItem"] = { __ename__ : true, __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
 haxe.StackItem.CFunction = ["CFunction",0];
