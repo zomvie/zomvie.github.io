@@ -85,12 +85,6 @@ ApplicationMain.embed = $hx_exports.openfl.embed = function(elementName,width,he
 	image9.onload = ApplicationMain.image_onLoad;
 	image9.src = id;
 	ApplicationMain.total++;
-	var image10 = new Image();
-	id = "graphics/block.png";
-	ApplicationMain.images.set(id,image10);
-	image10.onload = ApplicationMain.image_onLoad;
-	image10.src = id;
-	ApplicationMain.total++;
 	if(ApplicationMain.total == 0) ApplicationMain.start(); else {
 		var $it0 = ApplicationMain.urlLoaders.keys();
 		while( $it0.hasNext() ) {
@@ -144,8 +138,8 @@ ApplicationMain.preloader_onComplete = function(event) {
 	if(hasMain) Reflect.callMethod(Main,Reflect.field(Main,"main"),[]); else {
 		var instance = Type.createInstance(DocumentClass,[]);
 		if(js.Boot.__instanceof(instance,openfl.display.DisplayObject)) openfl.Lib.current.addChild(instance); else {
-			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 305, className : "ApplicationMain", methodName : "preloader_onComplete"});
-			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 306, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 294, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 295, className : "ApplicationMain", methodName : "preloader_onComplete"});
 		}
 	}
 };
@@ -1488,9 +1482,6 @@ var DefaultAssetLibrary = function() {
 	id = "font/04B_03__.ttf.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
-	id = "graphics/block.png";
-	this.path.set(id,id);
-	this.type.set(id,openfl.AssetType.IMAGE);
 	id = "font/04B_03__.ttf";
 	this.className.set(id,__ASSET__font_5);
 	this.type.set(id,openfl.AssetType.FONT);
@@ -2556,11 +2547,15 @@ MainScene.__name__ = ["MainScene"];
 MainScene.__super__ = com.haxepunk.Scene;
 MainScene.prototype = $extend(com.haxepunk.Scene.prototype,{
 	begin: function() {
-		this.add(new entities.Block(30,30));
+		this.text = this.addGraphic(new com.haxepunk.graphics.Text("Hello World!!",0,0));
 	}
 	,update: function() {
-		com.haxepunk.Scene.prototype.update.call(this);
+		if(com.haxepunk.utils.Input.mouseDown) {
+			this.text.set_x(Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) - MainScene.IntervalText[0]);
+			this.text.set_y(Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y) - MainScene.IntervalText[1]);
+		}
 	}
+	,text: null
 	,__class__: MainScene
 });
 var IMap = function() { };
@@ -2605,11 +2600,11 @@ NMEPreloader.prototype = $extend(openfl.display.Sprite.prototype,{
 		return 3355443;
 	}
 	,getHeight: function() {
-		var height = 480;
+		var height = 800;
 		if(height > 0) return height; else return openfl.Lib.current.stage.stageHeight;
 	}
 	,getWidth: function() {
-		var width = 640;
+		var width = 480;
 		if(width > 0) return width; else return openfl.Lib.current.stage.stageWidth;
 	}
 	,onInit: function() {
@@ -10119,41 +10114,6 @@ com.haxepunk.utils.Touch.prototype = {
 	,__class__: com.haxepunk.utils.Touch
 	,__properties__: {get_pressed:"get_pressed",get_sceneY:"get_sceneY",get_sceneX:"get_sceneX"}
 };
-var entities = {};
-entities.Block = function(x,y) {
-	if(y == null) y = 0;
-	if(x == null) x = 0;
-	com.haxepunk.Entity.call(this,x,y);
-	com.haxepunk.Entity.prototype.set_graphic.call(this,new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
-		var $r;
-		var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
-			var $r;
-			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/block.png",true);
-			$r = data;
-			return $r;
-		}($this))));
-		$r = e;
-		return $r;
-	}(this)):(function($this) {
-		var $r;
-		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/block.png"));
-		$r = e1;
-		return $r;
-	}(this))));
-};
-$hxClasses["entities.Block"] = entities.Block;
-entities.Block.__name__ = ["entities","Block"];
-entities.Block.__super__ = com.haxepunk.Entity;
-entities.Block.prototype = $extend(com.haxepunk.Entity.prototype,{
-	update: function() {
-		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromRight(37))) this.moveBy(-2,0);
-		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromRight(39))) this.moveBy(2,0);
-		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromRight(38))) this.moveBy(0,-2);
-		if(com.haxepunk.utils.Input.mouseDown) this.moveBy(0,2);
-		com.haxepunk.Entity.prototype.update.call(this);
-	}
-	,__class__: entities.Block
-});
 var haxe = {};
 haxe.StackItem = $hxClasses["haxe.StackItem"] = { __ename__ : true, __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
 haxe.StackItem.CFunction = ["CFunction",0];
@@ -16949,6 +16909,7 @@ ApplicationMain.total = 0;
 openfl.display.DisplayObject.__instanceCount = 0;
 openfl.display.DisplayObject.__worldRenderDirty = 0;
 openfl.display.DisplayObject.__worldTransformDirty = 0;
+MainScene.IntervalText = [-30,-30];
 openfl.geom.Matrix.__identity = new openfl.geom.Matrix();
 com.haxepunk.HXP.VERSION = "2.5.3";
 com.haxepunk.HXP.INT_MIN_VALUE = -2147483648;
