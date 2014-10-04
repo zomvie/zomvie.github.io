@@ -85,6 +85,18 @@ ApplicationMain.embed = $hx_exports.openfl.embed = function(elementName,width,he
 	image9.onload = ApplicationMain.image_onLoad;
 	image9.src = id;
 	ApplicationMain.total++;
+	var image10 = new Image();
+	id = "graphics/bullet.png";
+	ApplicationMain.images.set(id,image10);
+	image10.onload = ApplicationMain.image_onLoad;
+	image10.src = id;
+	ApplicationMain.total++;
+	var image11 = new Image();
+	id = "graphics/player.png";
+	ApplicationMain.images.set(id,image11);
+	image11.onload = ApplicationMain.image_onLoad;
+	image11.src = id;
+	ApplicationMain.total++;
 	if(ApplicationMain.total == 0) ApplicationMain.start(); else {
 		var $it0 = ApplicationMain.urlLoaders.keys();
 		while( $it0.hasNext() ) {
@@ -138,8 +150,8 @@ ApplicationMain.preloader_onComplete = function(event) {
 	if(hasMain) Reflect.callMethod(Main,Reflect.field(Main,"main"),[]); else {
 		var instance = Type.createInstance(DocumentClass,[]);
 		if(js.Boot.__instanceof(instance,openfl.display.DisplayObject)) openfl.Lib.current.addChild(instance); else {
-			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 294, className : "ApplicationMain", methodName : "preloader_onComplete"});
-			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 295, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 316, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 317, className : "ApplicationMain", methodName : "preloader_onComplete"});
 		}
 	}
 };
@@ -1482,6 +1494,12 @@ var DefaultAssetLibrary = function() {
 	id = "font/04B_03__.ttf.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
+	id = "graphics/bullet.png";
+	this.path.set(id,id);
+	this.type.set(id,openfl.AssetType.IMAGE);
+	id = "graphics/player.png";
+	this.path.set(id,id);
+	this.type.set(id,openfl.AssetType.IMAGE);
 	id = "font/04B_03__.ttf";
 	this.className.set(id,__ASSET__font_5);
 	this.type.set(id,openfl.AssetType.FONT);
@@ -2544,18 +2562,47 @@ var MainScene = function() {
 };
 $hxClasses["MainScene"] = MainScene;
 MainScene.__name__ = ["MainScene"];
+MainScene.player = null;
 MainScene.__super__ = com.haxepunk.Scene;
 MainScene.prototype = $extend(com.haxepunk.Scene.prototype,{
 	begin: function() {
-		this.text = this.addGraphic(new com.haxepunk.graphics.Text("Hello World!!",0,0));
+		MainScene.player = new entities.Player();
+		this.add(MainScene.player);
 	}
 	,update: function() {
+		this.CheckTouch();
+		this.GenerateBullet();
+		com.haxepunk.Scene.prototype.update.call(this);
+	}
+	,CheckTouch: function() {
 		if(com.haxepunk.utils.Input.mouseDown) {
-			this.text.set_x(Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) - MainScene.IntervalText[0]);
-			this.text.set_y(Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y) - MainScene.IntervalText[1]);
+			if(-1 != MainScene.positionTouch[0] && -1 != MainScene.positionTouch[1]) {
+				var _g = MainScene.player;
+				_g.set_x((_g.followCamera?_g.x + com.haxepunk.HXP.camera.x:_g.x) + (com.haxepunk.utils.Input.get_mouseX() - MainScene.positionTouch[0]));
+				var _g1 = MainScene.player;
+				_g1.set_y((_g1.followCamera?_g1.y + com.haxepunk.HXP.camera.y:_g1.y) + (com.haxepunk.utils.Input.get_mouseY() - MainScene.positionTouch[1]));
+			}
+			MainScene.positionTouch[0] = com.haxepunk.utils.Input.get_mouseX();
+			MainScene.positionTouch[1] = com.haxepunk.utils.Input.get_mouseY();
+		} else {
+			MainScene.positionTouch[0] = -1;
+			MainScene.positionTouch[1] = -1;
 		}
 	}
-	,text: null
+	,GenerateBullet: function() {
+		MainScene.timer += com.haxepunk.HXP.elapsed;
+		if(0.5 > MainScene.timer) return;
+		var bullet = new entities.Bullet();
+		bullet.x = com.haxepunk.HXP.width + 5;
+		bullet.set_y((function($this) {
+			var $r;
+			com.haxepunk.HXP._seed = com.haxepunk.HXP._seed * 16807.0 % 2147483647 | 0;
+			$r = com.haxepunk.HXP._seed / 2147483647;
+			return $r;
+		}(this)) * com.haxepunk.HXP.height);
+		this.add(bullet);
+		MainScene.timer = 0.0;
+	}
 	,__class__: MainScene
 });
 var IMap = function() { };
@@ -2600,7 +2647,7 @@ NMEPreloader.prototype = $extend(openfl.display.Sprite.prototype,{
 		return 3355443;
 	}
 	,getHeight: function() {
-		var height = 800;
+		var height = 640;
 		if(height > 0) return height; else return openfl.Lib.current.stage.stageHeight;
 	}
 	,getWidth: function() {
@@ -10114,6 +10161,88 @@ com.haxepunk.utils.Touch.prototype = {
 	,__class__: com.haxepunk.utils.Touch
 	,__properties__: {get_pressed:"get_pressed",get_sceneY:"get_sceneY",get_sceneX:"get_sceneX"}
 };
+var entities = {};
+entities.Bullet = function(x,y) {
+	if(y == null) y = 0;
+	if(x == null) x = 0;
+	com.haxepunk.Entity.call(this,x,y);
+	this.set_graphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+		var $r;
+		var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+			var $r;
+			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/bullet.png",true);
+			$r = data;
+			return $r;
+		}($this))));
+		$r = e;
+		return $r;
+	}(this)):(function($this) {
+		var $r;
+		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/bullet.png"));
+		$r = e1;
+		return $r;
+	}(this))));
+	this.width = 10;
+	this.height = 10;
+	this.originX = 0;
+	this.originY = 0;
+	this.set_type("bullet");
+};
+$hxClasses["entities.Bullet"] = entities.Bullet;
+entities.Bullet.__name__ = ["entities","Bullet"];
+entities.Bullet.__super__ = com.haxepunk.Entity;
+entities.Bullet.prototype = $extend(com.haxepunk.Entity.prototype,{
+	update: function() {
+		this.moveBy(-2,0);
+		if(-5 > (this.followCamera?this.x + com.haxepunk.HXP.camera.x:this.x)) this.destroy();
+		com.haxepunk.Entity.prototype.update.call(this);
+	}
+	,destroy: function() {
+		this._scene.remove(this);
+	}
+	,__class__: entities.Bullet
+});
+entities.Player = function(x,y) {
+	if(y == null) y = 0;
+	if(x == null) x = 0;
+	com.haxepunk.Entity.call(this,x,y);
+	this.set_graphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+		var $r;
+		var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+			var $r;
+			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/player.png",true);
+			$r = data;
+			return $r;
+		}($this))));
+		$r = e;
+		return $r;
+	}(this)):(function($this) {
+		var $r;
+		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/player.png"));
+		$r = e1;
+		return $r;
+	}(this))));
+	this.x = 30;
+	this.y = 30;
+	this.width = 32;
+	this.height = 32;
+	this.originX = 0;
+	this.originY = 0;
+};
+$hxClasses["entities.Player"] = entities.Player;
+entities.Player.__name__ = ["entities","Player"];
+entities.Player.__super__ = com.haxepunk.Entity;
+entities.Player.prototype = $extend(com.haxepunk.Entity.prototype,{
+	update: function() {
+		var entity = this.collide("bullet",this.followCamera?this.x + com.haxepunk.HXP.camera.x:this.x,this.followCamera?this.y + com.haxepunk.HXP.camera.y:this.y);
+		if(null != entity) {
+			var bullet;
+			bullet = js.Boot.__cast(entity , entities.Bullet);
+			bullet.destroy();
+		}
+	}
+	,__class__: entities.Player
+});
 var haxe = {};
 haxe.StackItem = $hxClasses["haxe.StackItem"] = { __ename__ : true, __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
 haxe.StackItem.CFunction = ["CFunction",0];
@@ -16909,7 +17038,8 @@ ApplicationMain.total = 0;
 openfl.display.DisplayObject.__instanceCount = 0;
 openfl.display.DisplayObject.__worldRenderDirty = 0;
 openfl.display.DisplayObject.__worldTransformDirty = 0;
-MainScene.IntervalText = [-30,-30];
+MainScene.timer = 0.0;
+MainScene.positionTouch = [-1,-1];
 openfl.geom.Matrix.__identity = new openfl.geom.Matrix();
 com.haxepunk.HXP.VERSION = "2.5.3";
 com.haxepunk.HXP.INT_MIN_VALUE = -2147483648;
