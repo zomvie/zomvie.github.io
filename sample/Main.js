@@ -86,16 +86,34 @@ ApplicationMain.embed = $hx_exports.openfl.embed = function(elementName,width,he
 	image9.src = id;
 	ApplicationMain.total++;
 	var image10 = new Image();
-	id = "graphics/bullet.png";
+	id = "graphics/button_left.png";
 	ApplicationMain.images.set(id,image10);
 	image10.onload = ApplicationMain.image_onLoad;
 	image10.src = id;
 	ApplicationMain.total++;
 	var image11 = new Image();
-	id = "graphics/player.png";
+	id = "graphics/button_right.png";
 	ApplicationMain.images.set(id,image11);
 	image11.onload = ApplicationMain.image_onLoad;
 	image11.src = id;
+	ApplicationMain.total++;
+	var image12 = new Image();
+	id = "graphics/player.png";
+	ApplicationMain.images.set(id,image12);
+	image12.onload = ApplicationMain.image_onLoad;
+	image12.src = id;
+	ApplicationMain.total++;
+	var image13 = new Image();
+	id = "graphics/player2.png";
+	ApplicationMain.images.set(id,image13);
+	image13.onload = ApplicationMain.image_onLoad;
+	image13.src = id;
+	ApplicationMain.total++;
+	var image14 = new Image();
+	id = "graphics/player3.png";
+	ApplicationMain.images.set(id,image14);
+	image14.onload = ApplicationMain.image_onLoad;
+	image14.src = id;
 	ApplicationMain.total++;
 	if(ApplicationMain.total == 0) ApplicationMain.start(); else {
 		var $it0 = ApplicationMain.urlLoaders.keys();
@@ -150,8 +168,8 @@ ApplicationMain.preloader_onComplete = function(event) {
 	if(hasMain) Reflect.callMethod(Main,Reflect.field(Main,"main"),[]); else {
 		var instance = Type.createInstance(DocumentClass,[]);
 		if(js.Boot.__instanceof(instance,openfl.display.DisplayObject)) openfl.Lib.current.addChild(instance); else {
-			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 316, className : "ApplicationMain", methodName : "preloader_onComplete"});
-			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 317, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 349, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 350, className : "ApplicationMain", methodName : "preloader_onComplete"});
 		}
 	}
 };
@@ -1494,10 +1512,19 @@ var DefaultAssetLibrary = function() {
 	id = "font/04B_03__.ttf.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
-	id = "graphics/bullet.png";
+	id = "graphics/button_left.png";
+	this.path.set(id,id);
+	this.type.set(id,openfl.AssetType.IMAGE);
+	id = "graphics/button_right.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
 	id = "graphics/player.png";
+	this.path.set(id,id);
+	this.type.set(id,openfl.AssetType.IMAGE);
+	id = "graphics/player2.png";
+	this.path.set(id,id);
+	this.type.set(id,openfl.AssetType.IMAGE);
+	id = "graphics/player3.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
 	id = "font/04B_03__.ttf";
@@ -2562,47 +2589,62 @@ var MainScene = function() {
 };
 $hxClasses["MainScene"] = MainScene;
 MainScene.__name__ = ["MainScene"];
-MainScene.player = null;
 MainScene.__super__ = com.haxepunk.Scene;
 MainScene.prototype = $extend(com.haxepunk.Scene.prototype,{
 	begin: function() {
-		MainScene.player = new entities.Player();
-		this.add(MainScene.player);
+		this._player = new entities.Player(20,20);
+		this.add(this._player);
+		this._buttonLeft = this.addGraphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+			var $r;
+			var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+				var $r;
+				var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/button_left.png",true);
+				$r = data;
+				return $r;
+			}($this))));
+			$r = e;
+			return $r;
+		}(this)):(function($this) {
+			var $r;
+			var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/button_left.png"));
+			$r = e1;
+			return $r;
+		}(this))));
+		this._buttonLeft.x = 30;
+		this._buttonLeft.y = 500;
+		this._buttonLeft.setHitbox(90,90,null,null);
+		this.add(this._buttonLeft);
+		this._buttonRight = this.addGraphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+			var $r;
+			var e2 = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+				var $r;
+				var data1 = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/button_right.png",true);
+				$r = data1;
+				return $r;
+			}($this))));
+			$r = e2;
+			return $r;
+		}(this)):(function($this) {
+			var $r;
+			var e3 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/button_right.png"));
+			$r = e3;
+			return $r;
+		}(this))));
+		this._buttonRight.x = 360;
+		this._buttonRight.y = 500;
+		this._buttonRight.setHitbox(90,90,null,null);
+		this.add(this._buttonRight);
 	}
 	,update: function() {
-		this.CheckTouch();
-		this.GenerateBullet();
+		if(com.haxepunk.utils.Input.mouseDown) {
+			if(this._buttonLeft.get_x() < Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonLeft.get_x() + this._buttonLeft.width > Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonLeft.get_y() < Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y) && this._buttonLeft.get_y() + this._buttonLeft.height > Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y)) this._player.MoveDirection(false);
+			if(this._buttonRight.get_x() < Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonRight.get_x() + this._buttonRight.width > Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonRight.get_y() < Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y) && this._buttonRight.get_y() + this._buttonRight.height > Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y)) this._player.MoveDirection(true);
+		}
 		com.haxepunk.Scene.prototype.update.call(this);
 	}
-	,CheckTouch: function() {
-		if(com.haxepunk.utils.Input.mouseDown) {
-			if(-1 != MainScene.positionTouch[0] && -1 != MainScene.positionTouch[1]) {
-				var _g = MainScene.player;
-				_g.set_x((_g.followCamera?_g.x + com.haxepunk.HXP.camera.x:_g.x) + (com.haxepunk.utils.Input.get_mouseX() - MainScene.positionTouch[0]));
-				var _g1 = MainScene.player;
-				_g1.set_y((_g1.followCamera?_g1.y + com.haxepunk.HXP.camera.y:_g1.y) + (com.haxepunk.utils.Input.get_mouseY() - MainScene.positionTouch[1]));
-			}
-			MainScene.positionTouch[0] = com.haxepunk.utils.Input.get_mouseX();
-			MainScene.positionTouch[1] = com.haxepunk.utils.Input.get_mouseY();
-		} else {
-			MainScene.positionTouch[0] = -1;
-			MainScene.positionTouch[1] = -1;
-		}
-	}
-	,GenerateBullet: function() {
-		MainScene.timer += com.haxepunk.HXP.elapsed;
-		if(0.5 > MainScene.timer) return;
-		var bullet = new entities.Bullet();
-		bullet.x = com.haxepunk.HXP.width + 5;
-		bullet.set_y((function($this) {
-			var $r;
-			com.haxepunk.HXP._seed = com.haxepunk.HXP._seed * 16807.0 % 2147483647 | 0;
-			$r = com.haxepunk.HXP._seed / 2147483647;
-			return $r;
-		}(this)) * com.haxepunk.HXP.height);
-		this.add(bullet);
-		MainScene.timer = 0.0;
-	}
+	,_player: null
+	,_buttonLeft: null
+	,_buttonRight: null
 	,__class__: MainScene
 });
 var IMap = function() { };
@@ -6258,6 +6300,38 @@ com.haxepunk.ds.Either = $hxClasses["com.haxepunk.ds.Either"] = { __ename__ : tr
 com.haxepunk.ds.Either.Left = function(v) { var $x = ["Left",0,v]; $x.__enum__ = com.haxepunk.ds.Either; $x.toString = $estr; return $x; };
 com.haxepunk.ds.Either.Right = function(v) { var $x = ["Right",1,v]; $x.__enum__ = com.haxepunk.ds.Either; $x.toString = $estr; return $x; };
 com.haxepunk.graphics = {};
+com.haxepunk.graphics.Animation = function(name,frames,frameRate,loop,parent) {
+	if(loop == null) loop = true;
+	if(frameRate == null) frameRate = 0;
+	this.name = name;
+	this.frames = frames;
+	if(frameRate == 0) this.frameRate = com.haxepunk.HXP.assignedFrameRate; else this.frameRate = frameRate;
+	this.loop = loop;
+	this.frameCount = frames.length;
+	this.set_parent(parent);
+};
+$hxClasses["com.haxepunk.graphics.Animation"] = com.haxepunk.graphics.Animation;
+com.haxepunk.graphics.Animation.__name__ = ["com","haxepunk","graphics","Animation"];
+com.haxepunk.graphics.Animation.prototype = {
+	play: function(reset,reverse) {
+		if(reverse == null) reverse = false;
+		if(reset == null) reset = false;
+		if(this.name == null) this._parent.playAnimation(this,reset,reverse); else this._parent.play(this.name,reset,reverse);
+	}
+	,parent: null
+	,set_parent: function(value) {
+		this._parent = value;
+		return this._parent;
+	}
+	,name: null
+	,frames: null
+	,frameRate: null
+	,frameCount: null
+	,loop: null
+	,_parent: null
+	,__class__: com.haxepunk.graphics.Animation
+	,__properties__: {set_parent:"set_parent"}
+};
 com.haxepunk.graphics.Graphiclist = function(graphic) {
 	this._graphics = new Array();
 	this._temp = new Array();
@@ -6803,6 +6877,263 @@ com.haxepunk.graphics.Image.prototype = $extend(com.haxepunk.Graphic.prototype,{
 	,_scale: null
 	,__class__: com.haxepunk.graphics.Image
 	,__properties__: $extend(com.haxepunk.Graphic.prototype.__properties__,{get_clipRect:"get_clipRect",set_scaledHeight:"set_scaledHeight",get_scaledHeight:"get_scaledHeight",set_scaledWidth:"set_scaledWidth",get_scaledWidth:"get_scaledWidth",get_height:"get_height",get_width:"get_width",set_flipped:"set_flipped",get_flipped:"get_flipped",set_color:"set_color",get_color:"get_color",set_alpha:"set_alpha",get_alpha:"get_alpha",set_scale:"set_scale",get_scale:"get_scale"})
+});
+com.haxepunk.graphics.Spritemap = function(source,frameWidth,frameHeight,cbFunc) {
+	if(frameHeight == null) frameHeight = 0;
+	if(frameWidth == null) frameWidth = 0;
+	this.complete = true;
+	this.rate = 1;
+	this._anims = new haxe.ds.StringMap();
+	this._timer = this._frame = 0;
+	this._rect = new openfl.geom.Rectangle(0,0,frameWidth,frameHeight);
+	{
+		var _g = source;
+		switch(_g[1]) {
+		case 0:
+			var bd = _g[2];
+			com.haxepunk.graphics.Image.call(this,com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+				var $r;
+				var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+					var $r;
+					var data = new com.haxepunk.graphics.atlas.AtlasData(bd);
+					$r = data;
+					return $r;
+				}($this))));
+				$r = e;
+				return $r;
+			}(this)):(function($this) {
+				var $r;
+				var e1 = com.haxepunk.ds.Either.Left(bd);
+				$r = e1;
+				return $r;
+			}(this)),this._rect);
+			break;
+		case 1:
+			var atlas = _g[2];
+			this._atlas = atlas;
+			this._atlas.prepare(frameWidth,frameHeight);
+			com.haxepunk.graphics.Image.call(this,(function($this) {
+				var $r;
+				var region = atlas.getRegion($this._frame);
+				$r = (function($this) {
+					var $r;
+					var e2 = com.haxepunk.ds.Either.Right(region);
+					$r = e2;
+					return $r;
+				}($this));
+				return $r;
+			}(this)),this._rect);
+			break;
+		}
+	}
+	if(this.blit) {
+		this._width = this._source.width;
+		this._height = this._source.height;
+	} else {
+		this._width = Std["int"](this._atlas.get_width());
+		this._height = Std["int"](this._atlas.get_height());
+	}
+	if(frameWidth == 0) this._rect.width = this._width;
+	if(frameHeight == 0) this._rect.height = this._height;
+	if(this._width % this._rect.width != 0 || this._height % this._rect.height != 0) throw "Source image width and height should be multiples of the frame width and height.";
+	this._columns = Math.ceil(this._width / this._rect.width);
+	this._rows = Math.ceil(this._height / this._rect.height);
+	this._frameCount = this._columns * this._rows;
+	this.callbackFunc = cbFunc;
+	this.updateBuffer();
+	this.active = true;
+};
+$hxClasses["com.haxepunk.graphics.Spritemap"] = com.haxepunk.graphics.Spritemap;
+com.haxepunk.graphics.Spritemap.__name__ = ["com","haxepunk","graphics","Spritemap"];
+com.haxepunk.graphics.Spritemap.__super__ = com.haxepunk.graphics.Image;
+com.haxepunk.graphics.Spritemap.prototype = $extend(com.haxepunk.graphics.Image.prototype,{
+	complete: null
+	,callbackFunc: null
+	,rate: null
+	,updateBuffer: function(clearBefore) {
+		if(clearBefore == null) clearBefore = false;
+		if(this.blit) {
+			if(this._width > 0 && this._height > 0) {
+				this._rect.x = this._rect.width * this._frame;
+				this._rect.y = (this._rect.x / this._width | 0) * this._rect.height;
+				this._rect.x = this._rect.x % this._width;
+				if(this._flipped) this._rect.x = this._width - this._rect.width - this._rect.x;
+			}
+			com.haxepunk.graphics.Image.prototype.updateBuffer.call(this,clearBefore);
+		} else this._region = this._atlas.getRegion(this._frame);
+	}
+	,update: function() {
+		if(this._anim != null && !this.complete) {
+			this._timer += (com.haxepunk.HXP.fixed?this._anim.frameRate / com.haxepunk.HXP.assignedFrameRate:this._anim.frameRate * com.haxepunk.HXP.elapsed) * this.rate;
+			if(this._timer >= 1) {
+				while(this._timer >= 1) {
+					this._timer--;
+					if(this.reverse) this._index += -1; else this._index += 1;
+					if(this.reverse && this._index == -1 || !this.reverse && this._index == this._anim.frameCount) {
+						if(this._anim.loop) {
+							if(this.reverse) this._index = this._anim.frameCount - 1; else this._index = 0;
+							if(this.callbackFunc != null) this.callbackFunc();
+						} else {
+							if(this.reverse) this._index = 0; else this._index = this._anim.frameCount - 1;
+							this.complete = true;
+							if(this.callbackFunc != null) this.callbackFunc();
+							break;
+						}
+					}
+				}
+				if(this._anim != null) this._frame = this._anim.frames[this._index] | 0;
+				this.updateBuffer();
+			}
+		}
+	}
+	,add: function(name,frames,frameRate,loop) {
+		if(loop == null) loop = true;
+		if(frameRate == null) frameRate = 0;
+		if(this._anims.get(name) != null) throw "Cannot have multiple animations with the same name";
+		var _g1 = 0;
+		var _g = frames.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			frames[i] %= this._frameCount;
+			if(frames[i] < 0) frames[i] += this._frameCount;
+		}
+		var anim = new com.haxepunk.graphics.Animation(name,frames,frameRate,loop);
+		this._anims.set(name,anim);
+		anim.set_parent(this);
+		return anim;
+	}
+	,play: function(name,reset,reverse) {
+		if(reverse == null) reverse = false;
+		if(reset == null) reset = false;
+		if(name == null) name = "";
+		if(!reset && this._anim != null && this._anim.name == name) return this._anim;
+		if(!this._anims.exists(name)) {
+			this.stop(reset);
+			return null;
+		}
+		this._anim = this._anims.get(name);
+		this.reverse = reverse;
+		this.restart();
+		return this._anim;
+	}
+	,playFrames: function(frames,frameRate,loop,reset,reverse) {
+		if(reverse == null) reverse = false;
+		if(reset == null) reset = false;
+		if(loop == null) loop = true;
+		if(frameRate == null) frameRate = 0;
+		if(frames == null || frames.length == 0) {
+			this.stop(reset);
+			return null;
+		}
+		if(reset == false && this._anim != null && this._anim.frames == frames) return this._anim;
+		return this.playAnimation(new com.haxepunk.graphics.Animation(null,frames,frameRate,loop),reset,reverse);
+	}
+	,playAnimation: function(anim,reset,reverse) {
+		if(reverse == null) reverse = false;
+		if(reset == null) reset = false;
+		if(anim == null) throw "No animation supplied";
+		if(reset == false && this._anim == anim) return anim;
+		this._anim = anim;
+		this.reverse = reverse;
+		this.restart();
+		return anim;
+	}
+	,restart: function() {
+		this._timer = this.reverse?this._index = this._anim.frames.length - 1:this._index = 0;
+		this._frame = this._anim.frames[this._index];
+		this.complete = false;
+		this.updateBuffer();
+	}
+	,stop: function(reset) {
+		if(reset == null) reset = false;
+		this._anim = null;
+		if(reset) this._frame = this.reverse?this._index = this._anim.frames.length - 1:this._index = 0;
+		this.complete = true;
+		this.updateBuffer();
+	}
+	,getFrame: function(column,row) {
+		if(row == null) row = 0;
+		if(column == null) column = 0;
+		return row % this._rows * this._columns + column % this._columns;
+	}
+	,setFrame: function(column,row) {
+		if(row == null) row = 0;
+		if(column == null) column = 0;
+		this._anim = null;
+		var frame = row % this._rows * this._columns + column % this._columns;
+		if(this._frame == frame) return;
+		this._frame = frame;
+		this.updateBuffer();
+	}
+	,randFrame: function() {
+		this.set_frame((function($this) {
+			var $r;
+			com.haxepunk.HXP._seed = com.haxepunk.HXP._seed * 16807.0 % 2147483647 | 0;
+			$r = com.haxepunk.HXP._seed / 2147483647 * $this._frameCount | 0;
+			return $r;
+		}(this)));
+	}
+	,setAnimFrame: function(name,index) {
+		var frames = this._anims.get(name).frames;
+		index = index % frames.length;
+		if(index < 0) index += frames.length;
+		this.set_frame(frames[index]);
+	}
+	,get_frame: function() {
+		return this._frame;
+	}
+	,set_frame: function(value) {
+		this._anim = null;
+		value %= this._frameCount;
+		if(value < 0) value = this._frameCount + value;
+		if(this._frame == value) return this._frame;
+		this._frame = value;
+		this.updateBuffer();
+		return this._frame;
+	}
+	,get_index: function() {
+		if(this._anim != null) return this._index; else return 0;
+	}
+	,set_index: function(value) {
+		if(this._anim == null) return 0;
+		value %= this._anim.frameCount;
+		if(this._index == value) return this._index;
+		this._index = value;
+		this._frame = this._anim.frames[this._index];
+		this.updateBuffer();
+		return this._index;
+	}
+	,reverse: null
+	,frameCount: null
+	,get_frameCount: function() {
+		return this._frameCount;
+	}
+	,columns: null
+	,get_columns: function() {
+		return this._columns;
+	}
+	,rows: null
+	,get_rows: function() {
+		return this._rows;
+	}
+	,currentAnim: null
+	,get_currentAnim: function() {
+		if(this._anim != null) return this._anim.name; else return "";
+	}
+	,_rect: null
+	,_width: null
+	,_height: null
+	,_columns: null
+	,_rows: null
+	,_frameCount: null
+	,_anims: null
+	,_anim: null
+	,_index: null
+	,_frame: null
+	,_timer: null
+	,_atlas: null
+	,__class__: com.haxepunk.graphics.Spritemap
+	,__properties__: $extend(com.haxepunk.graphics.Image.prototype.__properties__,{get_currentAnim:"get_currentAnim",get_rows:"get_rows",get_columns:"get_columns",get_frameCount:"get_frameCount",set_index:"set_index",get_index:"get_index",set_frame:"set_frame",get_frame:"get_frame"})
 });
 com.haxepunk.graphics._Text = {};
 com.haxepunk.graphics._Text.StyleType_Impl_ = function() { };
@@ -10162,85 +10493,67 @@ com.haxepunk.utils.Touch.prototype = {
 	,__properties__: {get_pressed:"get_pressed",get_sceneY:"get_sceneY",get_sceneX:"get_sceneX"}
 };
 var entities = {};
-entities.Bullet = function(x,y) {
-	if(y == null) y = 0;
-	if(x == null) x = 0;
-	com.haxepunk.Entity.call(this,x,y);
-	this.set_graphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+entities.Player = function(__x,__y) {
+	if(__y == null) __y = 0;
+	if(__x == null) __x = 0;
+	com.haxepunk.Entity.call(this,__x,__y);
+	this._sprite = new com.haxepunk.graphics.Spritemap((function($this) {
 		var $r;
-		var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+		var tileset = entities.Player.FileSprite;
+		$r = com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
 			var $r;
-			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/bullet.png",true);
-			$r = data;
+			var e = com.haxepunk.ds.Either.Right(new com.haxepunk.graphics.atlas.TileAtlas((function($this) {
+				var $r;
+				var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName(tileset,true);
+				$r = data;
+				return $r;
+			}($this))));
+			$r = e;
 			return $r;
-		}($this))));
-		$r = e;
-		return $r;
-	}(this)):(function($this) {
-		var $r;
-		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/bullet.png"));
-		$r = e1;
-		return $r;
-	}(this))));
-	this.width = 10;
-	this.height = 10;
-	this.originX = 0;
-	this.originY = 0;
-	this.set_type("bullet");
-};
-$hxClasses["entities.Bullet"] = entities.Bullet;
-entities.Bullet.__name__ = ["entities","Bullet"];
-entities.Bullet.__super__ = com.haxepunk.Entity;
-entities.Bullet.prototype = $extend(com.haxepunk.Entity.prototype,{
-	update: function() {
-		this.moveBy(-2,0);
-		if(-5 > (this.followCamera?this.x + com.haxepunk.HXP.camera.x:this.x)) this.destroy();
-		com.haxepunk.Entity.prototype.update.call(this);
-	}
-	,destroy: function() {
-		this._scene.remove(this);
-	}
-	,__class__: entities.Bullet
-});
-entities.Player = function(x,y) {
-	if(y == null) y = 0;
-	if(x == null) x = 0;
-	com.haxepunk.Entity.call(this,x,y);
-	this.set_graphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
-		var $r;
-		var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
+		}($this)):(function($this) {
 			var $r;
-			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/player.png",true);
-			$r = data;
+			var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap(tileset));
+			$r = e1;
 			return $r;
-		}($this))));
-		$r = e;
+		}($this));
 		return $r;
-	}(this)):(function($this) {
-		var $r;
-		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/player.png"));
-		$r = e1;
-		return $r;
-	}(this))));
-	this.x = 30;
-	this.y = 30;
-	this.width = 32;
-	this.height = 32;
-	this.originX = 0;
-	this.originY = 0;
+	}(this)),entities.Player.SpriteFrameSize[0],entities.Player.SpriteFrameSize[1]);
+	this._sprite.add(entities.Player.TagAniIdle,entities.Player.FramesIdle);
+	this._sprite.add(entities.Player.TagAniWalk,entities.Player.FramesWalk,entities.Player.FrameRateWalk);
+	this._sprite.play(entities.Player.TagAniIdle);
+	this.set_graphic(this._sprite);
+	this._velocity = 0;
+	this._acceleration = 0;
 };
 $hxClasses["entities.Player"] = entities.Player;
 entities.Player.__name__ = ["entities","Player"];
 entities.Player.__super__ = com.haxepunk.Entity;
 entities.Player.prototype = $extend(com.haxepunk.Entity.prototype,{
-	update: function() {
-		var entity = this.collide("bullet",this.followCamera?this.x + com.haxepunk.HXP.camera.x:this.x,this.followCamera?this.y + com.haxepunk.HXP.camera.y:this.y);
-		if(null != entity) {
-			var bullet;
-			bullet = js.Boot.__cast(entity , entities.Bullet);
-			bullet.destroy();
+	MoveDirection: function(__right) {
+		this._acceleration = 0;
+		if(!__right) this._acceleration = -1; else this._acceleration = 1;
+	}
+	,Move: function() {
+		this._velocity += this._acceleration;
+		if(Math.abs(this._velocity) > entities.Player.VelocityMax) this._velocity = entities.Player.VelocityMax * com.haxepunk.HXP.sign(this._velocity);
+		if(0 > this._velocity) this._velocity = Math.min(this._velocity + entities.Player.VelocityAccel,0); else if(0 < this._velocity) this._velocity = Math.max(this._velocity - entities.Player.VelocityAccel,0);
+		this.moveBy(this._velocity,0);
+		this._acceleration = 0;
+	}
+	,SetAnimation: function() {
+		if(0 == this._velocity) this._sprite.play(entities.Player.TagAniIdle); else {
+			this._sprite.play(entities.Player.TagAniWalk);
+			if(0 > this._velocity) this._sprite.set_flipped(true); else this._sprite.set_flipped(false);
 		}
 	}
+	,update: function() {
+		this.Move();
+		this.SetAnimation();
+		com.haxepunk.Entity.prototype.update.call(this);
+	}
+	,_acceleration: null
+	,_velocity: null
+	,_sprite: null
 	,__class__: entities.Player
 });
 var haxe = {};
@@ -17038,8 +17351,6 @@ ApplicationMain.total = 0;
 openfl.display.DisplayObject.__instanceCount = 0;
 openfl.display.DisplayObject.__worldRenderDirty = 0;
 openfl.display.DisplayObject.__worldTransformDirty = 0;
-MainScene.timer = 0.0;
-MainScene.positionTouch = [-1,-1];
 openfl.geom.Matrix.__identity = new openfl.geom.Matrix();
 com.haxepunk.HXP.VERSION = "2.5.3";
 com.haxepunk.HXP.INT_MIN_VALUE = -2147483648;
@@ -17338,6 +17649,15 @@ com.haxepunk.utils.Key.NUMPAD_DIVIDE = 111;
 com.haxepunk.utils.Key.NUMPAD_ENTER = 108;
 com.haxepunk.utils.Key.NUMPAD_MULTIPLY = 106;
 com.haxepunk.utils.Key.NUMPAD_SUBTRACT = 109;
+entities.Player.FileSprite = "graphics/player3.png";
+entities.Player.SpriteFrameSize = [48,48];
+entities.Player.FramesIdle = [0];
+entities.Player.FramesWalk = [1,2,3,2];
+entities.Player.FrameRateWalk = 12;
+entities.Player.VelocityMax = 5;
+entities.Player.VelocityAccel = 0.4;
+entities.Player.TagAniIdle = "idle";
+entities.Player.TagAniWalk = "walk";
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;
