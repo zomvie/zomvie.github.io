@@ -86,34 +86,22 @@ ApplicationMain.embed = $hx_exports.openfl.embed = function(elementName,width,he
 	image9.src = id;
 	ApplicationMain.total++;
 	var image10 = new Image();
-	id = "graphics/button_left.png";
+	id = "graphics/bullet.png";
 	ApplicationMain.images.set(id,image10);
 	image10.onload = ApplicationMain.image_onLoad;
 	image10.src = id;
 	ApplicationMain.total++;
 	var image11 = new Image();
-	id = "graphics/button_right.png";
+	id = "graphics/enemy.png";
 	ApplicationMain.images.set(id,image11);
 	image11.onload = ApplicationMain.image_onLoad;
 	image11.src = id;
 	ApplicationMain.total++;
 	var image12 = new Image();
-	id = "graphics/player.png";
+	id = "graphics/ship.png";
 	ApplicationMain.images.set(id,image12);
 	image12.onload = ApplicationMain.image_onLoad;
 	image12.src = id;
-	ApplicationMain.total++;
-	var image13 = new Image();
-	id = "graphics/player2.png";
-	ApplicationMain.images.set(id,image13);
-	image13.onload = ApplicationMain.image_onLoad;
-	image13.src = id;
-	ApplicationMain.total++;
-	var image14 = new Image();
-	id = "graphics/player3.png";
-	ApplicationMain.images.set(id,image14);
-	image14.onload = ApplicationMain.image_onLoad;
-	image14.src = id;
 	ApplicationMain.total++;
 	if(ApplicationMain.total == 0) ApplicationMain.start(); else {
 		var $it0 = ApplicationMain.urlLoaders.keys();
@@ -168,8 +156,8 @@ ApplicationMain.preloader_onComplete = function(event) {
 	if(hasMain) Reflect.callMethod(Main,Reflect.field(Main,"main"),[]); else {
 		var instance = Type.createInstance(DocumentClass,[]);
 		if(js.Boot.__instanceof(instance,openfl.display.DisplayObject)) openfl.Lib.current.addChild(instance); else {
-			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 349, className : "ApplicationMain", methodName : "preloader_onComplete"});
-			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 350, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("Error: No entry point found",{ fileName : "ApplicationMain.hx", lineNumber : 327, className : "ApplicationMain", methodName : "preloader_onComplete"});
+			haxe.Log.trace("If you are using DCE with a static main, you may need to @:keep the function",{ fileName : "ApplicationMain.hx", lineNumber : 328, className : "ApplicationMain", methodName : "preloader_onComplete"});
 		}
 	}
 };
@@ -1512,19 +1500,13 @@ var DefaultAssetLibrary = function() {
 	id = "font/04B_03__.ttf.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
-	id = "graphics/button_left.png";
+	id = "graphics/bullet.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
-	id = "graphics/button_right.png";
+	id = "graphics/enemy.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
-	id = "graphics/player.png";
-	this.path.set(id,id);
-	this.type.set(id,openfl.AssetType.IMAGE);
-	id = "graphics/player2.png";
-	this.path.set(id,id);
-	this.type.set(id,openfl.AssetType.IMAGE);
-	id = "graphics/player3.png";
+	id = "graphics/ship.png";
 	this.path.set(id,id);
 	this.type.set(id,openfl.AssetType.IMAGE);
 	id = "font/04B_03__.ttf";
@@ -2592,59 +2574,25 @@ MainScene.__name__ = ["MainScene"];
 MainScene.__super__ = com.haxepunk.Scene;
 MainScene.prototype = $extend(com.haxepunk.Scene.prototype,{
 	begin: function() {
-		this._player = new entities.Player(20,20);
-		this.add(this._player);
-		this._buttonLeft = this.addGraphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
-			var $r;
-			var e = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
-				var $r;
-				var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/button_left.png",true);
-				$r = data;
-				return $r;
-			}($this))));
-			$r = e;
-			return $r;
-		}(this)):(function($this) {
-			var $r;
-			var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/button_left.png"));
-			$r = e1;
-			return $r;
-		}(this))));
-		this._buttonLeft.x = 30;
-		this._buttonLeft.y = 500;
-		this._buttonLeft.setHitbox(90,90,null,null);
-		this.add(this._buttonLeft);
-		this._buttonRight = this.addGraphic(new com.haxepunk.graphics.Image(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
-			var $r;
-			var e2 = com.haxepunk.ds.Either.Right(com.haxepunk.graphics.atlas.Atlas.loadImageAsRegion((function($this) {
-				var $r;
-				var data1 = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/button_right.png",true);
-				$r = data1;
-				return $r;
-			}($this))));
-			$r = e2;
-			return $r;
-		}(this)):(function($this) {
-			var $r;
-			var e3 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/button_right.png"));
-			$r = e3;
-			return $r;
-		}(this))));
-		this._buttonRight.x = 360;
-		this._buttonRight.y = 500;
-		this._buttonRight.setHitbox(90,90,null,null);
-		this.add(this._buttonRight);
+		var ship = new entities.Ship(0,0);
+		this.add(ship);
+		var enemy = new entities.Enemy(0,com.haxepunk.HXP.halfHeight);
+		this.add(enemy);
+		this._spawnTimer = 1;
+		this.Spawn();
 	}
 	,update: function() {
-		if(com.haxepunk.utils.Input.mouseDown) {
-			if(this._buttonLeft.get_x() < Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonLeft.get_x() + this._buttonLeft.width > Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonLeft.get_y() < Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y) && this._buttonLeft.get_y() + this._buttonLeft.height > Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y)) this._player.MoveDirection(false);
-			if(this._buttonRight.get_x() < Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonRight.get_x() + this._buttonRight.width > Std["int"](com.haxepunk.HXP.screen.get_mouseX() + this.camera.x) && this._buttonRight.get_y() < Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y) && this._buttonRight.get_y() + this._buttonRight.height > Std["int"](com.haxepunk.HXP.screen.get_mouseY() + this.camera.y)) this._player.MoveDirection(true);
-		}
+		this._spawnTimer -= com.haxepunk.HXP.elapsed;
+		if(0 > this._spawnTimer) this.Spawn();
+		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromRight(27))) openfl.system.System.exit(0);
 		com.haxepunk.Scene.prototype.update.call(this);
 	}
-	,_player: null
-	,_buttonLeft: null
-	,_buttonRight: null
+	,Spawn: function() {
+		var y = Math.random() * com.haxepunk.HXP.height;
+		this.add(new entities.Enemy(0,y));
+		this._spawnTimer = 1;
+	}
+	,_spawnTimer: null
 	,__class__: MainScene
 });
 var IMap = function() { };
@@ -2689,11 +2637,11 @@ NMEPreloader.prototype = $extend(openfl.display.Sprite.prototype,{
 		return 3355443;
 	}
 	,getHeight: function() {
-		var height = 640;
+		var height = 480;
 		if(height > 0) return height; else return openfl.Lib.current.stage.stageHeight;
 	}
 	,getWidth: function() {
-		var width = 480;
+		var width = 640;
 		if(width > 0) return width; else return openfl.Lib.current.stage.stageWidth;
 	}
 	,onInit: function() {
@@ -10493,68 +10441,177 @@ com.haxepunk.utils.Touch.prototype = {
 	,__properties__: {get_pressed:"get_pressed",get_sceneY:"get_sceneY",get_sceneX:"get_sceneX"}
 };
 var entities = {};
-entities.Player = function(__x,__y) {
-	if(__y == null) __y = 0;
-	if(__x == null) __x = 0;
+entities.Bullet = function(__x,__y) {
+	var Width = 33;
+	var Height = 26;
+	var AniFrameRate = 12;
 	com.haxepunk.Entity.call(this,__x,__y);
-	this._sprite = new com.haxepunk.graphics.Spritemap((function($this) {
+	var sprite = new com.haxepunk.graphics.Spritemap(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
 		var $r;
-		var tileset = entities.Player.FileSprite;
-		$r = com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+		var e = com.haxepunk.ds.Either.Right(new com.haxepunk.graphics.atlas.TileAtlas((function($this) {
 			var $r;
-			var e = com.haxepunk.ds.Either.Right(new com.haxepunk.graphics.atlas.TileAtlas((function($this) {
-				var $r;
-				var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName(tileset,true);
-				$r = data;
-				return $r;
-			}($this))));
-			$r = e;
+			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/bullet.png",true);
+			$r = data;
 			return $r;
-		}($this)):(function($this) {
-			var $r;
-			var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap(tileset));
-			$r = e1;
-			return $r;
-		}($this));
+		}($this))));
+		$r = e;
 		return $r;
-	}(this)),entities.Player.SpriteFrameSize[0],entities.Player.SpriteFrameSize[1]);
-	this._sprite.add(entities.Player.TagAniIdle,entities.Player.FramesIdle);
-	this._sprite.add(entities.Player.TagAniWalk,entities.Player.FramesWalk,entities.Player.FrameRateWalk);
-	this._sprite.play(entities.Player.TagAniIdle);
-	this.set_graphic(this._sprite);
-	this._velocity = 0;
-	this._acceleration = 0;
+	}(this)):(function($this) {
+		var $r;
+		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/bullet.png"));
+		$r = e1;
+		return $r;
+	}(this)),Width,Height);
+	sprite.add("idle",[0,1,2,3],AniFrameRate);
+	sprite.play("idle");
+	this.set_graphic(sprite);
+	this.set_type("bullet");
 };
-$hxClasses["entities.Player"] = entities.Player;
-entities.Player.__name__ = ["entities","Player"];
-entities.Player.__super__ = com.haxepunk.Entity;
-entities.Player.prototype = $extend(com.haxepunk.Entity.prototype,{
-	MoveDirection: function(__right) {
-		this._acceleration = 0;
-		if(!__right) this._acceleration = -1; else this._acceleration = 1;
-	}
-	,Move: function() {
-		this._velocity += this._acceleration;
-		if(Math.abs(this._velocity) > entities.Player.VelocityMax) this._velocity = entities.Player.VelocityMax * com.haxepunk.HXP.sign(this._velocity);
-		if(0 > this._velocity) this._velocity = Math.min(this._velocity + entities.Player.VelocityAccel,0); else if(0 < this._velocity) this._velocity = Math.max(this._velocity - entities.Player.VelocityAccel,0);
-		this.moveBy(this._velocity,0);
-		this._acceleration = 0;
-	}
-	,SetAnimation: function() {
-		if(0 == this._velocity) this._sprite.play(entities.Player.TagAniIdle); else {
-			this._sprite.play(entities.Player.TagAniWalk);
-			if(0 > this._velocity) this._sprite.set_flipped(true); else this._sprite.set_flipped(false);
-		}
+$hxClasses["entities.Bullet"] = entities.Bullet;
+entities.Bullet.__name__ = ["entities","Bullet"];
+entities.Bullet.__super__ = com.haxepunk.Entity;
+entities.Bullet.prototype = $extend(com.haxepunk.Entity.prototype,{
+	moveCollideX: function(__entity) {
+		this._scene.remove(__entity);
+		this._scene.remove(this);
+		return true;
 	}
 	,update: function() {
-		this.Move();
-		this.SetAnimation();
+		this.moveBy(-7,0,com.haxepunk._Entity.SolidType_Impl_.fromLeft("enemy"));
 		com.haxepunk.Entity.prototype.update.call(this);
 	}
-	,_acceleration: null
-	,_velocity: null
+	,__class__: entities.Bullet
+});
+entities.Enemy = function(__x,__y) {
+	var Width = 76;
+	var Height = 98;
+	var AniFrameRate = 12;
+	com.haxepunk.Entity.call(this,__x,__y);
+	this.set_graphic(com.haxepunk.graphics.Image.createRect(32,32));
+	var sprite = new com.haxepunk.graphics.Spritemap(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+		var $r;
+		var e = com.haxepunk.ds.Either.Right(new com.haxepunk.graphics.atlas.TileAtlas((function($this) {
+			var $r;
+			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/enemy.png",true);
+			$r = data;
+			return $r;
+		}($this))));
+		$r = e;
+		return $r;
+	}(this)):(function($this) {
+		var $r;
+		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/enemy.png"));
+		$r = e1;
+		return $r;
+	}(this)),Width,Height);
+	sprite.add("idle",[0,1],AniFrameRate);
+	sprite.play("idle");
+	this.set_graphic(sprite);
+	this.width = Width;
+	this.height = Height;
+	this.originX = 0;
+	this.originY = 0;
+	this.set_type("enemy");
+};
+$hxClasses["entities.Enemy"] = entities.Enemy;
+entities.Enemy.__name__ = ["entities","Enemy"];
+entities.Enemy.__super__ = com.haxepunk.Entity;
+entities.Enemy.prototype = $extend(com.haxepunk.Entity.prototype,{
+	moveCollideX: function(__entity) {
+		this._scene.remove(__entity);
+		this._scene.remove(this);
+		openfl.system.System.exit(0);
+		return true;
+	}
+	,update: function() {
+		this.moveBy(2,0,com.haxepunk._Entity.SolidType_Impl_.fromLeft("player"));
+		com.haxepunk.Entity.prototype.update.call(this);
+	}
+	,__class__: entities.Enemy
+});
+entities.Ship = function(__x,__y) {
+	com.haxepunk.Entity.call(this,__x,__y);
+	var ImageWidth = 88;
+	var ImageHeight = 72;
+	var AniFrameRate = 12;
+	this._sprite = new com.haxepunk.graphics.Spritemap(com.haxepunk.HXP.renderMode == com.haxepunk.RenderMode.HARDWARE?(function($this) {
+		var $r;
+		var e = com.haxepunk.ds.Either.Right(new com.haxepunk.graphics.atlas.TileAtlas((function($this) {
+			var $r;
+			var data = com.haxepunk.graphics.atlas.AtlasData.getAtlasDataByName("graphics/ship.png",true);
+			$r = data;
+			return $r;
+		}($this))));
+		$r = e;
+		return $r;
+	}(this)):(function($this) {
+		var $r;
+		var e1 = com.haxepunk.ds.Either.Left(com.haxepunk.HXP.getBitmap("graphics/ship.png"));
+		$r = e1;
+		return $r;
+	}(this)),ImageWidth,ImageHeight,$bind(this,this.EndAnimation));
+	this._sprite.add("run",[1,2,3,4,5,6],AniFrameRate);
+	this._sprite.add("shot",[8,9,10],AniFrameRate,false);
+	this._sprite.play("run");
+	this.set_graphic(this._sprite);
+	this.width = ImageWidth;
+	this.height = ImageHeight;
+	this.originX = 0;
+	this.originY = 0;
+	com.haxepunk.utils.Input.define("up",[38,87]);
+	com.haxepunk.utils.Input.define("down",[40,83]);
+	com.haxepunk.utils.Input.define("shoot",[32]);
+	this._velocity = 8;
+	this.set_type("player");
+	this._mouseDownTick = 0.0;
+	this.moveBy(com.haxepunk.HXP.width - ImageWidth - (this.followCamera?this.x + com.haxepunk.HXP.camera.x:this.x),ImageHeight - (this.followCamera?this.y + com.haxepunk.HXP.camera.y:this.y),null,false);
+};
+$hxClasses["entities.Ship"] = entities.Ship;
+entities.Ship.__name__ = ["entities","Ship"];
+entities.Ship.__super__ = com.haxepunk.Entity;
+entities.Ship.prototype = $extend(com.haxepunk.Entity.prototype,{
+	HandleInput: function() {
+		var BulletInetrvalX = -15;
+		var BulletInetrvalY = 8;
+		this._acceleration = 0;
+		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromLeft("up"))) this._acceleration = -1;
+		if(com.haxepunk.utils.Input.check(com.haxepunk.utils._Input.InputType_Impl_.fromLeft("down"))) this._acceleration = 1;
+		if(com.haxepunk.utils.Input.pressed(com.haxepunk.utils._Input.InputType_Impl_.fromLeft("shoot")) || com.haxepunk.utils.Input.mouseDown) {
+			this._mouseDownTick += com.haxepunk.HXP.elapsed;
+			if(0.1 > this._mouseDownTick) return;
+			this._scene.add(new entities.Bullet((this.followCamera?this.x + com.haxepunk.HXP.camera.x:this.x) + BulletInetrvalX,(this.followCamera?this.y + com.haxepunk.HXP.camera.y:this.y) + BulletInetrvalY));
+			this._sprite.play("shot");
+			this._mouseDownTick = 0.0;
+		}
+	}
+	,CheckMovement: function() {
+		this._velocity += this._acceleration * 3;
+		if(8 < Math.abs(this._velocity)) this._velocity = 8 * com.haxepunk.HXP.sign(this._velocity);
+		if(0 > this._velocity) this._velocity = Math.min(this._velocity + 0.4,0); else if(0 < this._velocity) this._velocity = Math.max(this._velocity - 0.4,0);
+	}
+	,CheckAnimation: function() {
+		if(0 == this._velocity) {
+			if("run" == this._sprite.get_currentAnim()) this._sprite.play("idle");
+		} else if("idle" == this._sprite.get_currentAnim()) this._sprite.play("run");
+	}
+	,EndAnimation: function() {
+		if("shot" == this._sprite.get_currentAnim()) this._sprite.play("run");
+	}
+	,update: function() {
+		this.HandleInput();
+		this.CheckMovement();
+		if(0 != this._velocity) {
+			var _g = this;
+			_g.y = (_g.followCamera?_g.y + com.haxepunk.HXP.camera.y:_g.y) + this._velocity;
+			this._sprite.play("run");
+		}
+		com.haxepunk.Entity.prototype.update.call(this);
+	}
 	,_sprite: null
-	,__class__: entities.Player
+	,_velocity: null
+	,_acceleration: null
+	,_mouseDownTick: null
+	,__class__: entities.Ship
 });
 var haxe = {};
 haxe.StackItem = $hxClasses["haxe.StackItem"] = { __ename__ : true, __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
@@ -17649,15 +17706,13 @@ com.haxepunk.utils.Key.NUMPAD_DIVIDE = 111;
 com.haxepunk.utils.Key.NUMPAD_ENTER = 108;
 com.haxepunk.utils.Key.NUMPAD_MULTIPLY = 106;
 com.haxepunk.utils.Key.NUMPAD_SUBTRACT = 109;
-entities.Player.FileSprite = "graphics/player3.png";
-entities.Player.SpriteFrameSize = [48,48];
-entities.Player.FramesIdle = [0];
-entities.Player.FramesWalk = [1,2,3,2];
-entities.Player.FrameRateWalk = 12;
-entities.Player.VelocityMax = 5;
-entities.Player.VelocityAccel = 0.4;
-entities.Player.TagAniIdle = "idle";
-entities.Player.TagAniWalk = "walk";
+entities.Bullet.DefaultSpeed = -7;
+entities.Ship.IdleAniTag = "idle";
+entities.Ship.RunAniTag = "run";
+entities.Ship.ShotAniTag = "shot";
+entities.Ship.MaxVelocity = 8;
+entities.Ship.Speed = 3;
+entities.Ship.Drag = 0.4;
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;
